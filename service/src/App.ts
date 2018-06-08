@@ -1,33 +1,32 @@
-import * as path from 'path';
 import * as express from 'express';
-import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
+import normalizePort = require('normalize-port');
 
-class App {
+import * as routes from './routes';
 
-    public express: express.Application;
+export class App {
+    private app: express.Express;
+    private port: number;
 
-    constructor() {
-        this.express = express();
-        this.middleware();
-        this.routes();
+    constructor(app: express.Express, port: any) {
+        this.app = app;
+        this.port = normalizePort(port);
+        this.configureMiddleware(app);
+        this.configureRoutes(app);
     }
 
-    private middleware(): void {
-        this.express.use(logger('dev'));
-        this.express.use(bodyParser.json());
-        this.express.use(bodyParser.urlencoded({ extended: false }));
+    private configureMiddleware(app: express.Application): void {
+        app.use(bodyParser.json());
+        app.use(bodyParser.urlencoded({ extended: false }));
     }
 
-    private routes(): void {
-        let router = express.Router();
-        router.get('/', (req:express.Request, res:express.Response, next:express.RequestHandler) => {
-            res.json({
-                message: 'Hello world!'
-            });
+    private configureRoutes(app: express.Application): void {
+        app.use(routes);
+    }
+
+    public run() {
+        this.app.listen(this.port, function() {
+            console.log('Place Your Bets API : UP');
         });
-        this.express.use('/', router);
     }
 }
-
-export default new App().express;

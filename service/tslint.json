@@ -1,0 +1,11 @@
+{
+    "extends": [
+        "tslint-config-olo"
+    ],
+    "rules": {
+        "no-use-before-declare": false,
+        "no-console": false,
+        "no-require-imports": false,
+        "no-var-requires": false
+    }
+}
