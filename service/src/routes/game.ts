@@ -72,14 +72,25 @@ router.post('/:id/bet', (req: express.Request, res: express.Response) => {
     .catch((error: AppError) => {
         res.status(500);
         res.send(error);
-    })
+    });
 });
 
 /**
  * Gets the current Question
  */
 router.get('/:id/question', (req: express.Request, res: express.Response) => {
-    res.send('NOT_IMPLEMENTED');
+    const gameController = new GameController();
+    const gameId = req.params.id;
+
+    gameController.getQuestion(gameId)
+    .then((response) => {
+        res.status(200);
+        res.send(response);
+    })
+    .catch((error: AppError) => {
+        res.status(400);
+        res.send(error);
+    });
 });
 
 /**

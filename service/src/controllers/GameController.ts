@@ -4,6 +4,7 @@ import { IGameDB } from './../services/db/IGameDB';
 import { GameDBDynamo } from './../services/db/GameDBDynamo';
 import { AppError, AppErrorCode } from './../models/AppError';
 import { QuestionController } from './QuestionController';
+import { Question } from './../models/Question';
 
 import { Router, Request, Response, NextFunction } from 'express';
 
@@ -94,8 +95,31 @@ export class GameController {
                     break;
                 }
             }
+        } catch (error) {
+            throw error;
+        }
+    }
 
+    public async getQuestion(gameId: string): Promise<Question> {
+        try {
+            const game = await this.getGame(gameId);
 
+            if (game.validateGameStatus([GameStatus.Question])) {
+                return game.currentQuestion.getQuestionWithoutCorrectAnswer();
+            } else {
+                switch (game.status) {
+                    case GameStatus.Start:
+                    case GameStatus.Answered:
+                        throw new AppError(AppErrorCode.BadRequest, 'No Question is currently set');
+                    break;
+                    case GameStatus.Category:
+                        throw new AppError(AppErrorCode.BadRequest, 'A Bet must be placed before seeing the question');
+                    break;
+                    default:
+                        throw new AppError(AppErrorCode.BadRequest, 'Invalid Game State');
+                    break;
+                }
+            }
         } catch (error) {
             throw error;
         }

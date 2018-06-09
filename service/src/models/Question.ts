@@ -15,4 +15,10 @@ export class Question {
     @attribute()
     correctAnswerId: string;
 
+    getQuestionWithoutCorrectAnswer(): Question {
+        const question = this;
+        question.correctAnswerId = '';
+        return question;
+    }
+
 }
