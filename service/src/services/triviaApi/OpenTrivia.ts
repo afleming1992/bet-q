@@ -10,17 +10,15 @@ export class OpenTrivia implements IQuestionAPI {
 
     API_PATH = 'https://opentdb.com/api.php';
 
-    getQuestion(): Promise<Question | AppError> {
-        return this.getQuestionFromApi()
-                    .then((question: Question) => {
-                        return question;
-                    })
-                    .catch((error: AppError) => {
-                        return error;
-                    });
+    async getQuestion(): Promise<Question> {
+        try {
+            return await this.getQuestionFromApi();
+        } catch (error) {
+            throw error;
+        }
     }
 
-    private getQuestionFromApi(): Promise<Question | AppError> {
+    private getQuestionFromApi(): Promise<Question> {
         const options = {
             uri: this.API_PATH,
             qs: {
@@ -38,7 +36,7 @@ export class OpenTrivia implements IQuestionAPI {
             return this.processQuestionResponse(result);
         })
         .catch(error => {
-            return new AppError(AppErrorCode.ApiError, error);
+            throw new AppError(AppErrorCode.ApiError, error);
         });
     }
 
@@ -64,8 +62,8 @@ export class OpenTrivia implements IQuestionAPI {
         return result;
     }
 
-    private mergeAnswersTogether(correctAnswer: Answer, incorrectAnswer: Answer[]): Answer[] {
-        let answers: Answer[] = [];
+    private mergeAnswersTogether(correctAnswer: Answer, incorrectAnswers: Answer[]): Answer[] {
+        let answers: Answer[] = incorrectAnswers;
         answers.push(correctAnswer);
         return this.shuffleAnswers(answers);
     }

@@ -33,6 +33,22 @@ export class Game {
         this.score = 1000;
         this.status = GameStatus.Start;
     }
+
+    hasCurrentQuestion(): boolean {
+        return this.currentQuestion !== undefined;
+    }
+
+    getCategoryResponse() {
+        return {
+            'questionNumber': this.questionNumber,
+            'category': this.currentQuestion.category
+        };
+    }
+
+    setNextQuestion(question: Question) {
+        this.currentQuestion = question;
+        this.questionNumber++;
+    }
 }
 
 export enum GameStatus {

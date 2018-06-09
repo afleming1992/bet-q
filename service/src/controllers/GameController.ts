@@ -3,17 +3,20 @@ import { Game, GameStatus } from './../models/Game';
 import { IGameDB } from './../services/db/IGameDB';
 import { GameDBDynamo } from './../services/db/GameDBDynamo';
 import { AppError, AppErrorCode } from './../models/AppError';
+import { QuestionController } from './QuestionController';
 
 import { Router, Request, Response, NextFunction } from 'express';
 
 export class GameController {
     private db: IGameDB;
+    private questionController: QuestionController;
 
     constructor() {
         this.db = new GameDBDynamo();
+        this.questionController = new QuestionController();
     }
 
-    public createNewGame(req: Request, res: Response) {
+    public async createNewGame(): Promise<any> {
         const newGame = new Game();
 
         newGame.setupNewGame();
@@ -24,42 +27,48 @@ export class GameController {
                         'message': 'Game Created',
                         'id': game.id
                     };
-                    res.statusCode = 200;
-                    res.send(response);
+                    return response;
                 })
                 .catch((error: AppError) => {
-                    res.statusCode = 500;
-                    res.send(error);
+                    throw error;
                 });
     }
 
-    public async getGame(req: Request, res: Response) {
-        const id = req.params.id;
+    public async getGame(id: string): Promise<Game> {
         if (id.length !== 36) {
-            res.status(400);
-            res.send(new AppError(AppErrorCode.BadRequest, 'Game ID is not a valid UUID'));
+            throw new AppError(AppErrorCode.BadRequest, 'Game ID is not a valid UUID');
         } else {
             try {
-                const game = await this.getGameInternal(id);
-                res.send(game);
+                return await this.db.getGame(id);
             } catch (error) {
-                res.send(error);
+                throw error;
             }
         }
     }
 
-    private getGameInternal(id: string) {
-        return this.db.getGame(id)
-        .then((game: Game) => {
-            return game;
-        })
-        .catch((error: AppError) => {
+    public async getCategory(gameId: string) {
+        try {
+            const game = await this.getGame(gameId);
+
+            if (game.hasCurrentQuestion()) {
+                return game.getCategoryResponse();
+            } else {
+                const updatedGame: Game = await this.questionController.setNewQuestion(game);
+                await this.db.updateGame(updatedGame);
+                return updatedGame.getCategoryResponse();
+            }
+
+        } catch (error) {
             throw error;
-        });
+        }
     }
 
-    public getCategory(req: Request, res: Response) {
-        const id = req.params.id;
-        const test = 'Hell';
+    private validateGameState(currentState: GameStatus, requiredState: GameStatus[]): boolean {
+        for (let i = 0; i < requiredState.length; i++) {
+            if (currentState === requiredState[i]) {
+                return true;
+            }
+        }
+        return false;
     }
 }
