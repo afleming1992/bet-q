@@ -54,6 +54,7 @@ export class GameController {
                 return game.getCategoryResponse();
             } else {
                 const updatedGame: Game = await this.questionController.setNewQuestion(game);
+                updatedGame.status = GameStatus.Category;
                 await this.db.updateGame(updatedGame);
                 return updatedGame.getCategoryResponse();
             }
@@ -63,12 +64,40 @@ export class GameController {
         }
     }
 
-    private validateGameState(currentState: GameStatus, requiredState: GameStatus[]): boolean {
-        for (let i = 0; i < requiredState.length; i++) {
-            if (currentState === requiredState[i]) {
-                return true;
+    public async setBet(gameId: string, betAmount: number) {
+        try {
+            const game = await this.getGame(gameId);
+
+            if (game.validateGameStatus([GameStatus.Category])) {
+               if (game.setBet(betAmount)) {
+                    game.status = GameStatus.Question;
+                    await this.db.updateGame(game);
+                    return {
+                        'message': 'Bet Accepted | Question has been unlocked for answering',
+                        'score': game.score,
+                        'atRisk': game.atRisk
+                    };
+               } else {
+                   throw new AppError(AppErrorCode.BadRequest, `Bets must between 25% of your current score ${game.getMinimumBet()} and your current score ${game.getMaximumBet()}`);
+               }
+            } else {
+                switch (game.status) {
+                    case GameStatus.Start:
+                    case GameStatus.Answered:
+                        throw new AppError(AppErrorCode.BadRequest, 'Bets can not be accepted if there is no current Question. Use the GET /category API to set the next Question');
+                    break;
+                    case GameStatus.Question:
+                        throw new AppError(AppErrorCode.BadRequest, 'Bets can not be changed once you have placed a bet!');
+                    break;
+                    default:
+                        throw new AppError(AppErrorCode.BadRequest, 'Invalid Game State');
+                    break;
+                }
             }
+
+
+        } catch (error) {
+            throw error;
         }
-        return false;
     }
 }

@@ -57,6 +57,25 @@ router.get('/:id/category', (req: express.Request, res: express.Response) => {
 });
 
 /**
+ * Sets Bet for the current Question
+ */
+router.post('/:id/bet', (req: express.Request, res: express.Response) => {
+    const gameController = new GameController();
+    const gameId = req.params.id;
+    const betAmount = req.body.bet;
+
+    gameController.setBet(gameId, betAmount)
+    .then((response) => {
+        res.status(200);
+        res.send(response);
+    })
+    .catch((error: AppError) => {
+        res.status(500);
+        res.send(error);
+    })
+});
+
+/**
  * Gets the current Question
  */
 router.get('/:id/question', (req: express.Request, res: express.Response) => {
