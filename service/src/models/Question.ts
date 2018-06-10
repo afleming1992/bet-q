@@ -21,4 +21,8 @@ export class Question {
         return question;
     }
 
+    isCorrectAnswer(selectedAnswerId: string): boolean {
+        return selectedAnswerId === this.correctAnswerId;
+    }
+
 }

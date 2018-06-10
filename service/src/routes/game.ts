@@ -97,7 +97,19 @@ router.get('/:id/question', (req: express.Request, res: express.Response) => {
  * Answer a Question
  */
 router.post('/:id/answer', (req: express.Request, res: express.Response) => {
-    res.send('NOT_IMPLEMENTED');
+    const gameController = new GameController();
+    const gameId = req.params.id;
+    const selectedAnswerId = req.body.answer;
+
+    gameController.answerQuestion(gameId, selectedAnswerId)
+    .then((response) => {
+        res.status(200);
+        res.send(response);
+    })
+    .catch((error: AppError) => {
+        res.status(400);
+        res.send(error);
+    });
 });
 
 export = router;

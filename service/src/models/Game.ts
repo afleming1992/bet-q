@@ -82,6 +82,30 @@ export class Game {
         }
     }
 
+    processCorrectAnswer(selectedAnswerId: string) {
+        const winnings = this.atRisk * 2;
+        this.status = GameStatus.Answered;
+        this.score = this.score + winnings;
+        return {
+            'result': 'CORRECT',
+            'correctAnswer': this.currentQuestion.correctAnswerId,
+            'winnings': winnings,
+            'totalScore': this.score
+        };
+    }
+
+    processIncorrectAnswer(selectedAnswerId: string) {
+        const lostScore = this.atRisk;
+        this.atRisk = 0;
+        this.status = GameStatus.Answered;
+        return {
+            'result': 'INCORRECT',
+            'correctAnswer': this.currentQuestion.correctAnswerId,
+            'lost': lostScore,
+            'totalScore': this.score
+        };
+    }
+
     getMinimumBet(): number {
         return Math.ceil(this.score * 0.25);
     }

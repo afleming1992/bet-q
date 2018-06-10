@@ -51,7 +51,7 @@ export class GameController {
         try {
             const game = await this.getGame(gameId);
 
-            if (game.hasCurrentQuestion()) {
+            if (game.hasCurrentQuestion() && !game.validateGameStatus([GameStatus.Answered])) {
                 return game.getCategoryResponse();
             } else {
                 const updatedGame: Game = await this.questionController.setNewQuestion(game);
@@ -104,12 +104,15 @@ export class GameController {
         try {
             const game = await this.getGame(gameId);
 
-            if (game.validateGameStatus([GameStatus.Question])) {
-                return game.currentQuestion.getQuestionWithoutCorrectAnswer();
+            if (game.validateGameStatus([GameStatus.Question, GameStatus.Answered])) {
+                if(game.status === GameStatus.Answered) {
+                    return game.currentQuestion;
+                } else {
+                    return game.currentQuestion.getQuestionWithoutCorrectAnswer();
+                }
             } else {
                 switch (game.status) {
                     case GameStatus.Start:
-                    case GameStatus.Answered:
                         throw new AppError(AppErrorCode.BadRequest, 'No Question is currently set');
                     break;
                     case GameStatus.Category:
@@ -117,6 +120,42 @@ export class GameController {
                     break;
                     default:
                         throw new AppError(AppErrorCode.BadRequest, 'Invalid Game State');
+                    break;
+                }
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async answerQuestion(gameId: string, selectedAnswerId: string) {
+        try {
+            const game = await this.getGame(gameId);
+
+            if (game.validateGameStatus([GameStatus.Question])) {
+                let response;
+                if (game.currentQuestion.isCorrectAnswer(selectedAnswerId)) {
+                    response = game.processCorrectAnswer(selectedAnswerId);
+                } else {
+                    response = game.processIncorrectAnswer(selectedAnswerId);
+                }
+
+                await this.db.updateGame(game);
+
+                return response;
+            } else {
+                switch (game.status) {
+                    case GameStatus.Start:
+                        throw new AppError(AppErrorCode.BadRequest, `Wait your trying to answer a question that has not been set`);
+                    break;
+                    case GameStatus.Category:
+                        throw new AppError(AppErrorCode.BadRequest, `You need to place a bet before answering the question`);
+                    break;
+                    case GameStatus.Answered:
+                        throw new AppError(AppErrorCode.BadRequest, `You have already answered this question`);
+                    break;
+                    default:
+                        throw new AppError(AppErrorCode.BadRequest, "Invalid Game State");
                     break;
                 }
             }
