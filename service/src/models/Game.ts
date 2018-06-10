@@ -32,7 +32,8 @@ export class Game {
 
     setupNewGame() {
         this.id = uuid.v4();
-        this.totalQuestions = 12;
+        this.totalQuestions = parseInt(process.env.DEFAULT_NUMBER_OF_QUESTIONS === undefined ? '12' : process.env.DEFAULT_NUMBER_OF_QUESTIONS
+        , 10);
         this.questionNumber = 0;
         this.score = 1000;
         this.atRisk = 0;
@@ -84,7 +85,6 @@ export class Game {
 
     processCorrectAnswer(selectedAnswerId: string) {
         const winnings = this.atRisk * 2;
-        this.status = GameStatus.Answered;
         this.score = this.score + winnings;
         return {
             'result': 'CORRECT',
@@ -97,7 +97,6 @@ export class Game {
     processIncorrectAnswer(selectedAnswerId: string) {
         const lostScore = this.atRisk;
         this.atRisk = 0;
-        this.status = GameStatus.Answered;
         return {
             'result': 'INCORRECT',
             'correctAnswer': this.currentQuestion.correctAnswerId,
@@ -113,6 +112,14 @@ export class Game {
     getMaximumBet(): number {
         return this.score;
     }
+
+    isGameEnd(): GameEndScenario {
+        if (this.totalQuestions === this.questionNumber) {
+            return GameEndScenario.Completed;
+        } else {
+            return GameEndScenario.None;
+        }
+    }
 }
 
 export enum GameStatus {
@@ -121,4 +128,9 @@ export enum GameStatus {
     Question = 'QUESTION',
     Answered = 'ANSWERED',
     End = 'END'
+}
+
+export enum GameEndScenario {
+    None = 'NONE',
+    Completed = 'COMPLETED'
 }

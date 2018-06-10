@@ -1,5 +1,5 @@
 'use strict';
-import { Game, GameStatus } from './../models/Game';
+import { Game, GameStatus, GameEndScenario } from './../models/Game';
 import { IGameDB } from './../services/db/IGameDB';
 import { GameDBDynamo } from './../services/db/GameDBDynamo';
 import { AppError, AppErrorCode } from './../models/AppError';
@@ -50,6 +50,10 @@ export class GameController {
     public async getCategory(gameId: string) {
         try {
             const game = await this.getGame(gameId);
+
+            if (game.validateGameStatus([GameStatus.End])) {
+                throw new AppError(AppErrorCode.BadRequest, 'No more questions!');
+            }
 
             if (game.hasCurrentQuestion() && !game.validateGameStatus([GameStatus.Answered])) {
                 return game.getCategoryResponse();
@@ -138,6 +142,14 @@ export class GameController {
                     response = game.processCorrectAnswer(selectedAnswerId);
                 } else {
                     response = game.processIncorrectAnswer(selectedAnswerId);
+                }
+
+                if (game.isGameEnd() !== GameEndScenario.None) {
+                    game.status = GameStatus.End;
+                    response.isGameOver = true;
+                } else {
+                    game.status = GameStatus.Answered;
+                    response.isGameOver = false;
                 }
 
                 await this.db.updateGame(game);
