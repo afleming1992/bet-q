@@ -105,7 +105,7 @@ export class GameController {
             const game = await this.getGame(gameId);
 
             if (game.validateGameStatus([GameStatus.Question, GameStatus.Answered])) {
-                if(game.status === GameStatus.Answered) {
+                if (game.status === GameStatus.Answered) {
                     return game.currentQuestion;
                 } else {
                     return game.currentQuestion.getQuestionWithoutCorrectAnswer();
@@ -155,10 +155,23 @@ export class GameController {
                         throw new AppError(AppErrorCode.BadRequest, `You have already answered this question`);
                     break;
                     default:
-                        throw new AppError(AppErrorCode.BadRequest, "Invalid Game State");
+                        throw new AppError(AppErrorCode.BadRequest, `Invalid Game State`);
                     break;
                 }
             }
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async getMinAndMaxBet(gameId: string) {
+        try {
+            const game = await this.getGame(gameId);
+            return {
+                'score': game.score,
+                'minimumBet': game.getMinimumBet(),
+                'maximumBet': game.getMaximumBet()
+            };
         } catch (error) {
             throw error;
         }

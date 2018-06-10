@@ -57,6 +57,24 @@ router.get('/:id/category', (req: express.Request, res: express.Response) => {
 });
 
 /**
+ * Get Min and Max Bets for a Game
+ */
+router.get('/:id/bet', (req: express.Request, res: express.Response) => {
+    const gameController = new GameController();
+    const gameId = req.params.id;
+
+    gameController.getMinAndMaxBet(gameId)
+    .then((response) => {
+        res.status(200);
+        res.send(response);
+    })
+    .catch((error: AppError) => {
+        res.status(500);
+        res.send(error);
+    });
+});
+
+/**
  * Sets Bet for the current Question
  */
 router.post('/:id/bet', (req: express.Request, res: express.Response) => {
@@ -111,5 +129,4 @@ router.post('/:id/answer', (req: express.Request, res: express.Response) => {
         res.send(error);
     });
 });
-
 export = router;
