@@ -144,7 +144,10 @@ export class GameController {
                     response = game.processIncorrectAnswer(selectedAnswerId);
                 }
 
-                if (game.isGameEnd() !== GameEndScenario.None) {
+                if (game.isGameEnd() === GameEndScenario.Bankrupt) {
+                    game.status = GameStatus.Bankrupt;
+                    response.isGameOver = true;
+                } else if (game.isGameEnd() === GameEndScenario.Completed) {
                     game.status = GameStatus.End;
                     response.isGameOver = true;
                 } else {

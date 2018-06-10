@@ -114,7 +114,9 @@ export class Game {
     }
 
     isGameEnd(): GameEndScenario {
-        if (this.totalQuestions === this.questionNumber) {
+        if (this.score === 0) {
+            return GameEndScenario.Bankrupt;
+        } else if (this.totalQuestions === this.questionNumber) {
             return GameEndScenario.Completed;
         } else {
             return GameEndScenario.None;
@@ -127,10 +129,12 @@ export enum GameStatus {
     Category = 'CATEGORY',
     Question = 'QUESTION',
     Answered = 'ANSWERED',
+    Bankrupt = 'BANKRUPT',
     End = 'END'
 }
 
 export enum GameEndScenario {
     None = 'NONE',
+    Bankrupt = 'BANKRUPT',
     Completed = 'COMPLETED'
 }
