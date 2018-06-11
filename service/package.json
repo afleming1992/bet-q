@@ -1,10 +1,11 @@
 {
-  "name": "place-your-bets",
+  "name": "betQ-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "BetQ's Data Backend Services",
   "scripts": {
     "start": "node --inspect=5858 -r ts-node/register src/server.ts",
-    "dev": "nodemon"
+    "dev": "nodemon",
+    "test": ""
   },
   "author": "Andrew J. Fleming",
   "license": "MIT",
