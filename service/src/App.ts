@@ -26,7 +26,7 @@ export class App {
 
     public run() {
         this.app.listen(this.port, function() {
-            console.log('Place Your Bets API : UP');
+            console.log('BetQ Game API : UP');
         });
     }
 }
