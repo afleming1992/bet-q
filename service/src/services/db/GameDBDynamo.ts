@@ -12,7 +12,9 @@ export class GameDBDynamo implements IGameDB {
 
     constructor() {
         const client = new DynamoDB({
-            region: process.env.AWS_REGION
+            region: process.env.AWS_REGION,
+            accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
         });
         this.mapper = new DataMapper({client});
     }

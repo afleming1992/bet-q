@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "description": "BetQ's Data Backend Services",
   "scripts": {
-    "start": "node --inspect=5858 -r ts-node/register src/server.ts",
-    "dev": "nodemon",
-    "test": ""
+    "start": "node dist/server.js"
   },
   "author": "Andrew J. Fleming",
   "license": "MIT",
