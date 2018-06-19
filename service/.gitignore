@@ -62,4 +62,5 @@ bin/
 # vscode debug
 .vscode/
 
-.serverless/
+# Environment Config folder
+config/

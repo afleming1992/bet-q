@@ -3,6 +3,8 @@ import { App } from './App';
 
 require('dotenv').config();
 
-let port = process.env.PORT || 3000;
-let api = new App(express(), port);
+const port = process.env.PORT || 8080;
+const host = '0.0.0.0';
+
+let api = new App(express(), port, host);
 api.run();

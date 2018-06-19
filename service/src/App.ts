@@ -7,10 +7,12 @@ import * as routes from './routes';
 export class App {
     private app: express.Express;
     private port: number;
+    private host: string;
 
-    constructor(app: express.Express, port: any) {
+    constructor(app: express.Express, port: any, host: string) {
         this.app = app;
-        this.port = normalizePort(port);
+        this.port = port;
+        this.host = host;
         this.configureMiddleware(app);
         this.configureRoutes(app);
     }
@@ -25,7 +27,7 @@ export class App {
     }
 
     public run() {
-        this.app.listen(this.port, function() {
+        this.app.listen(this.port, this.host, function() {
             console.log('BetQ Game API : UP');
         });
     }
