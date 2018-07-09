@@ -1,5 +1,6 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
+import * as cors from 'cors';
 import normalizePort = require('normalize-port');
 
 import * as routes from './routes';
@@ -20,6 +21,7 @@ export class App {
     private configureMiddleware(app: express.Application): void {
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({ extended: false }));
+        app.use(cors());
     }
 
     private configureRoutes(app: express.Application): void {

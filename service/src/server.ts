@@ -6,5 +6,7 @@ require('dotenv').config();
 const port = process.env.PORT || 8080;
 const host = '0.0.0.0';
 
+let app = express();
+
 let api = new App(express(), port, host);
 api.run();
