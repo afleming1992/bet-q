@@ -13,6 +13,16 @@ export default function(state = initialState, action) {
             return LOCATION.QUESTION;
         case ACTIONS.ANSWER_QUESTION:
             return LOCATION.ANSWERED;
+        case ACTIONS.NEXT_QUESTION:
+            if(action.payload.isGameOver) {
+                if(action.payload.totalScore == 0) {
+                    return LOCATION.BANKRUPT
+                } else {
+                    return LOCATION.END;
+                }
+            } else {
+                return LOCATION.PLACE_BET;
+            }
         default:
             return state;
     }

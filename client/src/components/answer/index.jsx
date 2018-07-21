@@ -9,7 +9,9 @@ const htmlentities = new AllHtmlEntities();
 export default class Answer extends Component {
 
     onAnswerSelect(event) {
-        this.props.onAnswerSelected(this.props.answer.id);
+        if(!this.props.lockedIn) {
+            this.props.onAnswerSelected(this.props.answer.id);
+        }
     }
 
     render() {

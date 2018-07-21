@@ -1,0 +1,22 @@
+.icon-block {
+    color: #FFFFFF;
+}
+
+.icon-block {
+    text-align:center;
+    padding: 1em;
+    margin: 1em;
+    color: #FFFFFF;
+    border-radius: 50px;
+}
+
+.icon-block > .icon-block-description {
+    margin-top:1em;
+}
+
+.icon-block > .icon-block-figure {
+    color: #FFFFFF;
+    margin-top:0.5em;
+    font-weight: bolder;
+    
+}

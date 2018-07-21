@@ -40,15 +40,19 @@ class Question extends Component {
         this.setState({
             lockedIn: true
         });
+
+        this.props.answerQuestion(this.props.game, this.state.selectedAnswer);
     }
 
     renderAnswers() {
         return this.props.question.answers.map((answer) => {
             return (
                 <Answer 
+                    key={answer.id}
                     answer={answer} 
                     selectedAnswer={this.state.selectedAnswer} 
-                    onAnswerSelected={this.onAnswerSelected} />
+                    onAnswerSelected={this.onAnswerSelected}
+                    lockedIn={this.state.lockedIn} />
             )
         })
     }
@@ -62,7 +66,8 @@ class Question extends Component {
             return (
                 <button
                     className="btn btn-block btn-danger"
-                    onClick={() => { this.onLockIn() }}>
+                    onClick={() => { this.onLockIn() }}
+                    disabled={this.state.lockedIn ? "disabled" : ""}>
                     <FontAwesomeIcon icon={ icon } /> { text }
                 </button>
             )
@@ -90,7 +95,7 @@ class Question extends Component {
                     </div>
                     <hr />
                     <div id="lockin-block" className="row">
-                        <div class="col col-md-12 text-center">
+                        <div className="col col-md-12 text-center">
                             {
                                 this.renderLockinButton()
                             }

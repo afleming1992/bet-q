@@ -33,6 +33,14 @@ export default function(state = initialState, action) {
             }
 
             return newState;
+        case ACTIONS.NEXT_QUESTION:
+            const score = action.payload.totalScore;
+
+            return Object.assign(state, {
+                score: score,
+                atRisk: 0,
+                minimumBet: getMinimumBet(score)
+            })
         default:
             return state;
     }

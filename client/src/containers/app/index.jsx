@@ -2,11 +2,14 @@ import React, { Component } from 'react';
 
 import { connect } from 'react-redux'
 
+import GameScreen from './../../components/game-screen';
 import Start from './../../containers/start';
 import Loading from './../../components/loading';
 import Bet from './../../containers/bet';
 import Question from './../../containers/question';
-import GameScreen from './../../components/game-screen';
+import QuestionResult from './../../containers/result';
+import EndScreen from './../../containers/end';
+
 
 import * as LOCATION from './../../types/location';
 
@@ -48,14 +51,27 @@ class App extends Component {
                     </GameScreen>
                 );
             case (LOCATION.ANSWERED) :
-
-                break;
+                return (
+                    <GameScreen
+                        score={this.props.score}
+                        atRisk={this.props.atRisk}
+                        questionNumber={this.props.questionNumber}
+                        totalQuestions={this.props.totalQuestions}>
+                        <QuestionResult />
+                    </GameScreen>
+                )
             case (LOCATION.BANKRUPT) :
-
-                break;
+                return (
+                    <div>
+                        <EndScreen bankrupt={true} />
+                    </div>
+                );
             case (LOCATION.END) :
-
-                break;
+                return (
+                    <div>
+                        <EndScreen bankrupt={false} />
+                    </div>
+                )
             default:
                 return <Start />
         }

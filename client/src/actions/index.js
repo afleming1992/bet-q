@@ -94,3 +94,10 @@ export const answerQuestion = (game, selectedAnswer) => {
         payload: request
     }
 }
+
+export const nextQuestion = (result) => {
+    return {
+        type: ACTIONS.NEXT_QUESTION,
+        payload: result
+    };
+}

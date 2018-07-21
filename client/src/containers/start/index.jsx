@@ -38,6 +38,10 @@ class Start extends Component {
         return (
             <div className='start-buttons'>
                 <div className="card-body">
+                    <div className="author-details">
+                        <h3>A Quiz Game by: <br/><small>Andrew J. Fleming</small></h3>
+                    </div>
+                    <hr />
                     <button onClick={this.onGameStart} className="btn btn-success btn-lg btn-block">
                         <FontAwesomeIcon icon={faGamepad} /> Start
                     </button>
@@ -59,7 +63,7 @@ class Start extends Component {
                         </div>
                     </div>
                     <div className="row justify-content-center">
-                        <div className='col align-self-center card'>
+                        <div className='col col-md-6 align-self-center card'>
                             {
                                 this.state.loading ? <Loading loadingMessage={this.state.loadingMessage} /> : this.renderStartMenu()
                             }
