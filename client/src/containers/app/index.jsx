@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
+import { Helmet } from 'react-helmet';
 
 import GameScreen from './../../components/game-screen';
 import Start from './../../containers/start';
@@ -79,11 +80,17 @@ class App extends Component {
 
     render() {
         return (
-            <div className="row justify-content-center">
-                <div className="col-md-10 ">
-                    {this.renderByLocation()}
+            <div id="application">
+                <Helmet>
+                    <title>BetQ - Place a Bet against your Wits!</title>
+                </Helmet>
+                <div className="row justify-content-center">
+                    <div className="col-md-10 ">
+                        {this.renderByLocation()}
+                    </div>
                 </div>
             </div>
+            
             
         )
     }

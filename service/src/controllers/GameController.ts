@@ -26,7 +26,7 @@ export class GameController {
                 .then((game: Game) => {
                     const response = {
                         'message': 'Game Created',
-                        'id': game.id
+                        'game': game
                     };
                     return response;
                 })

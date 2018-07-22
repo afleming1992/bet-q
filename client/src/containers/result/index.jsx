@@ -32,8 +32,13 @@ class QuestionResult extends Component {
     }
 
     getCorrectAnswer() {
+        const correctAnswerId = this.props.result.correctAnswer;
         
-
+        for(let i = 0; i < this.props.question.answers.length ; i++) {
+            if(correctAnswerId === this.props.question.answers[i].id) {
+                return this.props.question.answers[i].text;
+            }
+        }
     }
 
     renderResult() {
@@ -48,13 +53,15 @@ class QuestionResult extends Component {
         } else {
             return (
                 <div id="answer-block" className="text-center">
-                    <span class="badge badge-pill badge-danger">
+                    <span className="badge badge-pill badge-danger">
                         <FontAwesomeIcon icon={faTimes} /> Wrong!
                     </span>
-                    <h5>The correct answer was:</h5>
-                    <span class="badge badge-pill badge-primary">
-                        { this.getCorrectAnswer() }
-                    </span>
+                    <div id="correct-answer">
+                        <h5>The correct answer was:</h5>
+                        <span className="badge badge-pill badge-primary">
+                            { this.getCorrectAnswer() }
+                        </span>
+                    </div>
                 </div>
             );
         }

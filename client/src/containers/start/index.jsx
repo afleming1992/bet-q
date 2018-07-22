@@ -39,7 +39,7 @@ class Start extends Component {
             <div className='start-buttons'>
                 <div className="card-body">
                     <div className="author-details">
-                        <h3>A Quiz Game by: <br/><small>Andrew J. Fleming</small></h3>
+                        <h3>A Quiz Game by <br/><small>Andrew J. Fleming</small></h3>
                     </div>
                     <hr />
                     <button onClick={this.onGameStart} className="btn btn-success btn-lg btn-block">
